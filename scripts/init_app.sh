@@ -47,8 +47,8 @@ cat << EOF > /etc/systemd/system/webapp.service
     WantedBy=multi-user.target
 
 EOF
-# systemctl daemon-reload
-# systemctl enable webapp
-# systemctl start webapp
-# systemctl status webapp
+systemctl daemon-reload
+systemctl enable webapp
+systemctl start webapp
+systemctl status webapp
 set +x

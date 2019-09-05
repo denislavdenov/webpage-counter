@@ -5,6 +5,7 @@
 - [x] Create Dev environtment Vagrantfile with 2 Ubuntu servers - 1 redis, 1 python
 - [x] Develop app
 - [x] Connect app with DB
+- [x] Add html,css to python app
 - [ ] Create Prod env building docker containers
 - [ ] Automate deployment process with jenkins and kubernetes
 

@@ -10,6 +10,11 @@
 
 
 ## How to use:
+Requirements:
+	
+- `Virtualbox` latest version currently 6
+- `Vagrant` latest version currently 2.2.5
+	
 
 1. Fork and clone
 2. Enter `webpage-counter` folder

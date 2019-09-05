@@ -7,3 +7,12 @@
 - [x] Connect app with DB
 - [ ] Create Prod env building docker containers
 - [ ] Automate deployment process with jenkins and kubernetes
+
+
+## How to use:
+
+1. Fork and clone
+2. Enter `webpage-counter` folder
+3. `vagrant up`
+4. Open `http://10.10.50.100:5000` in browser or `curl http://10.10.50.100:5000`
+5. Refresh to increase count

@@ -11,6 +11,8 @@
 
 ## TODO:
 
+- [ ] Edit application to get redis info from consul service discovery instead of hard coded
+
 
 
 ## How to use:

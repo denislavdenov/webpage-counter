@@ -23,7 +23,7 @@ chmod +x /usr/local/bin/check_service.sh
 cat << EOF > /etc/consul.d/db.json
 {
     "service": {
-        "name": "redis_db",
+        "name": "redis",
         "tags": ["${var2}"],
         "port": 6379
     },

@@ -1,17 +1,5 @@
 # Sample repo for python webpage hit counter
 
-## DONE:
-
-- [x] Create Dev environtment Vagrantfile with 2 Ubuntu servers - 1 redis, 1 python
-- [x] Develop app
-- [x] Connect app with DB
-- [x] Add html,css to python app
-- [x] Create 1 consul server and add consul client to app and db
-- [x] Add consul health checks for app and db
-
-## TODO:
-
-
 
 ## How to use:
 Requirements:
@@ -26,3 +14,17 @@ Requirements:
 4. Open `http://10.10.50.100:5000` in browser or `curl http://10.10.50.100:5000`
 5. Refresh to increase count
 6. Consul UI available now at `http://10.10.56.11:8500`
+
+
+## DONE:
+
+- [x] Create Dev environtment Vagrantfile with 2 Ubuntu servers - 1 redis, 1 python
+- [x] Develop app
+- [x] Connect app with DB
+- [x] Add html,css to python app
+- [x] Create 1 consul server and add consul client to app and db
+- [x] Add consul health checks for app and db
+
+## TODO:
+
+

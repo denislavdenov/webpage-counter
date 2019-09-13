@@ -6,9 +6,11 @@
 - [x] Develop app
 - [x] Connect app with DB
 - [x] Add html,css to python app
+- [x] Create 1 consul server and add consul client to app and db
+- [x] Add consul health checks for app and db
 
 ## TODO:
-- [ ] Create 1 consul server and add consul client to app and db
+
 
 
 ## How to use:

@@ -27,4 +27,5 @@ Requirements:
 
 ## TODO:
 
+- [ ] Edit python app to take redis info from Consul rather than hard coded
 

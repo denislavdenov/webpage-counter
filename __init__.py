@@ -1,9 +1,18 @@
 from flask import Flask, render_template
 from redis import Redis
 import os
+import json
+import urllib
+import urllib.request
+
+url = "http://10.10.56.11:8500/v1/catalog/service/redis"
+response = urllib.request.urlopen(url).read()
+output = json.loads(response.decode('utf-8'))
+DB_IP = output[0]["TaggedAddresses"]["lan"]
+DB_PORT=output[0]["ServicePort"]
 
 app = Flask(__name__)
-redis = Redis(host='10.10.50.200', port=6379)
+redis = Redis(host=DB_IP, port=DB_PORT)
 
 @app.route('/')
 def hello():

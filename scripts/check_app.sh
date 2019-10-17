@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+export CONSUL_HTTP_TOKEN=`cat /vagrant/keys/master.txt | grep "SecretID:" | cut -c19-`
 export HN=$(hostname)
 var2=$(hostname)
 
@@ -30,7 +30,17 @@ cat << EOF > /etc/consul.d/web_app.json
     "service": {
         "name": "web_app",
         "tags": ["${var2}"],
-        "port": 5000
+        "port": 5000,
+        "connect": {
+          "sidecar_service": {
+            "proxy": {
+              "upstreams": [{
+                "destination_name": "redis",
+                  "local_bind_port": 6479
+              }]
+            }
+          }
+        }
     },
     "checks": [
         {
@@ -64,3 +74,4 @@ sleep 5
 
 sleep 30
 consul reload
+consul connect proxy -sidecar-for web_app > output.log 2>&1 &

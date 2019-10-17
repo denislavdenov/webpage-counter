@@ -2,6 +2,7 @@
 
 export HN=$(hostname)
 var2=$(hostname)
+export CONSUL_HTTP_TOKEN=`cat /vagrant/keys/master.txt | grep "SecretID:" | cut -c19-`
 # Create script check
 
 cat << EOF > /usr/local/bin/check_db.sh
@@ -25,7 +26,8 @@ cat << EOF > /etc/consul.d/db.json
     "service": {
         "name": "redis",
         "tags": ["${var2}"],
-        "port": 6379
+        "port": 6379,
+        "connect": { "sidecar_service": {} }
     },
     "checks": [
         {
@@ -50,3 +52,4 @@ sleep 5
 consul reload
 sleep 30
 consul reload
+consul connect proxy -sidecar-for redis > output.log 2>&1 &

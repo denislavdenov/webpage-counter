@@ -42,10 +42,10 @@ Vagrant.configure("2") do |config|
     config.vm.define "client-web-app-#{dcname}" do |web|
       web.vm.box = "denislavd/xenial64"
       web.vm.hostname = "client-web-app-#{dcname}"
-      web.vm.provision :shell, path: "scripts/init_app.sh", privileged: true
       web.vm.provision :shell, path: "scripts/install_consul.sh", env: {"CONSUL_VER" => CONSUL_VER}
       web.vm.provision :shell, path: "scripts/start_consul.sh", env: {"SERVER_COUNT" => SERVER_COUNT,"LOG_LEVEL" => LOG_LEVEL,"DOMAIN" => DOMAIN,"DCS" => "#{dcname}","DC" => "#{dc}"}
       web.vm.provision :shell, path: "scripts/check_app.sh"
+      web.vm.provision :shell, path: "scripts/init_app.sh", privileged: true
       web.vm.network "private_network", ip: "10.10.50.100"
     end
   end

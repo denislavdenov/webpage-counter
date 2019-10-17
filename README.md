@@ -25,5 +25,6 @@ Requirements:
 - [x] Create 1 consul server and add consul client to app and db
 - [x] Add consul health checks for app and db
 - [x] Edit python app to take redis info from Consul rather than hard coded
+- [x] Enabled ACLs and Consul connect so app talks to db through TLS proxy
 
 ## TODO:

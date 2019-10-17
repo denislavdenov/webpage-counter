@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -x
 sudo iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 5000
-
+export CONSUL_HTTP_TOKEN=`cat /vagrant/keys/master.txt | grep "SecretID:" | cut -c19-`
 export PATH=/home/vagrant/.local/bin:$PATH
 sudo apt-get update
 sudo apt-get install vim -y
@@ -47,6 +47,7 @@ cat << EOF > /etc/systemd/system/webapp.service
     WantedBy=multi-user.target
 
 EOF
+consul intention create -allow web_app redis
 systemctl daemon-reload
 systemctl enable webapp
 systemctl start webapp

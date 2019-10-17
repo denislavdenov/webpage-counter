@@ -13,7 +13,49 @@ JOIN_SERVER="[\"10.${DC}0.56.11\"]"
 
 var2=$(hostname)
 mkdir -p /vagrant/logs
+mkdir -p /vagrant/keys
 mkdir -p /etc/consul.d
+
+acl_boostrap () {
+    cat << EOF > /etc/consul.d/acl.json
+    {
+        "acl": {
+            "enabled": true,
+            "default_policy": "deny",
+            "down_policy": "extend-cache"
+        }
+    }
+EOF
+
+    systemctl restart consul.service
+    sleep 15
+    consul acl bootstrap > /vagrant/keys/master.txt
+    export CONSUL_HTTP_TOKEN=`cat /vagrant/keys/master.txt | grep "SecretID:" | cut -c19-`
+    consul members
+    consul acl policy create  -name "agent-token" -description "Agent Token Policy" -rules @/vagrant/policy/agent-policy.hcl
+    consul acl policy create  -name "kv-token" -description "KV token policy" -rules @/vagrant/policy/kv.hcl
+    consul acl policy create  -name "snapshot-token" -description "Snapshot token policy" -rules @/vagrant/policy/snapshot.hcl
+    consul acl token create -description "Agent Token" -policy-name "agent-token" > /vagrant/keys/agent.txt
+    consul acl token create -description "KV Token" -policy-name "kv-token" > /vagrant/keys/kv.txt
+    consul acl token create -description "Snapshot Token" -policy-name "snapshot-token" > /vagrant/keys/snapshot.txt
+
+}
+
+change_acl_conf () {
+    cat << EOF > /etc/consul.d/acl.json
+    {
+        "primary_datacenter": "dc1",
+        "acl": {
+            "enabled": true,
+            "default_policy": "deny",
+            "down_policy": "extend-cache",
+            "tokens": {
+                "default": "${AGENT_TOKEN}"
+            }
+        }
+    }
+EOF
+}
 
 # Function used for initialize Consul. Requires 2 arguments: Log level and the hostname assigned by the respective variables.
 # If no log level is specified in the Vagrantfile, then default "info" is used.
@@ -84,7 +126,10 @@ create_server_conf () {
         "domain": "${7}",
         "datacenter": "${1}",
         "ui": true,
-        "disable_remote_exec": true
+        "disable_remote_exec": true,
+        "connect": {
+          "enabled": true
+        }
     }
 EOF
 }
@@ -117,20 +162,10 @@ EOF
 
 init_consul ${LOG_LEVEL} ${var2} 
 
-if [ ${TLS} = true ]; then
-    create_gossip_conf $var2
-fi
 
 if [[ "${var2}" =~ "consul-server" ]]; then
     killall consul
-     
-    if [[ "${var2}" =~ "dc1" ]]; then
-
-
     create_server_conf ${DCNAME} ${var2} ${IP} ${SERVER_COUNT} ${SOFIA_SERVERS} ${LOG_LEVEL} ${DOMAIN}
-
-
-    fi
 
 
     sleep 1
@@ -139,6 +174,16 @@ if [[ "${var2}" =~ "consul-server" ]]; then
     journalctl -f -u consul.service > /vagrant/logs/${var2}.log &
     sleep 5
     sudo systemctl status consul
+    if [[ "${var2}" =~ "1-dc1" ]]; then
+
+    acl_boostrap
+    
+    fi
+    export AGENT_TOKEN=`cat /vagrant/keys/agent.txt | grep "SecretID:" | cut -c19-`
+    change_acl_conf
+    systemctl restart consul
+    sleep 15
+
 
 else
     if [[ "${var2}" =~ "client" ]]; then
@@ -147,7 +192,8 @@ else
     fi
 
     sleep 1
-
+    export AGENT_TOKEN=`cat /vagrant/keys/agent.txt | grep "SecretID:" | cut -c19-`
+    change_acl_conf
     sudo systemctl enable consul
     sudo systemctl start consul
     journalctl -f -u consul.service > /vagrant/logs/${var2}.log &

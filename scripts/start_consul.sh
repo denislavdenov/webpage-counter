@@ -48,7 +48,7 @@ change_acl_conf () {
         "acl": {
             "enabled": true,
             "default_policy": "deny",
-            "down_policy": "extend-cache",
+            "down_policy": "deny",
             "tokens": {
                 "default": "${AGENT_TOKEN}"
             }

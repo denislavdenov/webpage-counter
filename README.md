@@ -27,11 +27,11 @@ Requirements:
 - [x] Edit python app to take redis info from Consul rather than hard coded
 - [x] Enabled ACLs and Consul connect so app talks to db through TLS proxy
 - [x] Start connect with systemd
+- [x] Put a password to the redis DB
+- [x] Update application to use password
 
 ## TODO:
 
-- [ ] Put a password to the redis DB
-- [ ] Update application to use password
 - [ ] Add Vault in dev mode
 - [ ] Add Redis password in Vault KV
 - [ ] Create AppRole for our application

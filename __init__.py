@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from redis import Redis
+import redis
 import os
 import json
 import urllib
@@ -11,13 +11,14 @@ output = json.loads(response.decode('utf-8'))
 DB_IP = output[0]["ServiceProxy"]["LocalServiceAddress"]
 DB_PORT=output[0]["ServiceProxy"]["Upstreams"][0]["LocalBindPort"]
 
+
 app = Flask(__name__)
-redis = Redis(host=DB_IP, port=DB_PORT)
+conn = redis.StrictRedis(host=DB_IP, port=DB_PORT, password='redispass')
 
 @app.route('/')
 def hello():
-    redis.incr('hits')
-    count = int(redis.get('hits'))
+    conn.incr('hits')
+    count = int(conn.get('hits'))
     return render_template('index.html', count = count)
 
 if __name__ == "__main__":

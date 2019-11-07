@@ -8,7 +8,7 @@ export CONSUL_HTTP_TOKEN=`cat /vagrant/keys/master.txt | grep "SecretID:" | cut 
 cat << EOF > /usr/local/bin/check_db.sh
 #!/usr/bin/env bash
 
-redis-cli ping | grep "PONG"
+redis-cli -a 'redispass' ping | grep "PONG"
 EOF
 
 cat << EOF > /usr/local/bin/check_service.sh

@@ -12,11 +12,11 @@ EOF
 cat << EOF > /usr/local/bin/check_db.py
 #!/usr/bin/env python3
 
-from redis import Redis
+import redis  
 import os
 
-redis = Redis(host='10.10.50.200', port=6379)
-count = int(redis.get('hits'))
+conn = redis.StrictRedis(host='10.10.50.200', port=6379, password='redispass')
+count = int(conn.get('hits'))
 print(count)
 
 EOF

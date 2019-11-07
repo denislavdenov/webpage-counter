@@ -26,5 +26,18 @@ Requirements:
 - [x] Add consul health checks for app and db
 - [x] Edit python app to take redis info from Consul rather than hard coded
 - [x] Enabled ACLs and Consul connect so app talks to db through TLS proxy
+- [x] Start connect with systemd
 
 ## TODO:
+
+- [ ] Put a password to the redis DB
+- [ ] Update application to use password
+- [ ] Add Vault in dev mode
+- [ ] Add Redis password in Vault KV
+- [ ] Create AppRole for our application
+- [ ] Update app to read redis password from Vault KV
+- [ ] Create ENV VAR for APP_PORT(5000)
+- [ ] Make application to use this port, if no ENV VAR, default to 5000
+- [ ] Run 3 copies of app on port 5001-5003
+- [ ] Make the application run from Nomad
+- [ ] Use Fabio for Load Balancer

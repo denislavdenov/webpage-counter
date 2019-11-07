@@ -74,4 +74,29 @@ sleep 5
 
 sleep 30
 consul reload
-consul connect proxy -sidecar-for web_app > output.log 2>&1 &
+
+cat << EOF > /etc/systemd/system/connect-app.service
+[Unit]
+Description="HashiCorp Consul - A service mesh solution"
+Documentation=https://www.consul.io/
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=consul
+Group=consul
+ExecStart=/usr/local/bin/consul connect proxy -sidecar-for web_app
+ExecReload=/usr/local/bin/consul connect proxy -sidecar-for web_app
+KillMode=process
+Restart=on-failure
+LimitNOFILE=65536
+
+
+[Install]
+WantedBy=multi-user.target
+
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable connect-app
+sudo systemctl start connect-app

@@ -1,5 +1,6 @@
 SERVER_COUNT = 1
 CONSUL_VER = "1.6.0"
+VAULT= "1.2.3"
 LOG_LEVEL = "debug" #The available log levels are "trace", "debug", "info", "warn", and "err". if empty - default is "info"
 DOMAIN = "consul"
 
@@ -24,6 +25,19 @@ Vagrant.configure("2") do |config|
         node.vm.provision :shell, path: "scripts/start_consul.sh", env: {"SERVER_COUNT" => SERVER_COUNT,"LOG_LEVEL" => LOG_LEVEL,"DOMAIN" => DOMAIN,"DCS" => "#{dcname}","DC" => "#{dc}"}
         node.vm.network "private_network", ip: "10.#{dc}0.56.1#{i}"
       end
+    end
+
+
+    # vault node
+    config.vm.define "client-vault-#{dcname}" do |vl|
+      vl.vm.box = "denislavd/xenial64"
+      vl.vm.hostname = "client-vault-#{dcname}"
+      vl.vm.provision :shell, path: "scripts/install_consul.sh", env: {"CONSUL_VER" => CONSUL_VER}
+      vl.vm.provision :shell, path: "scripts/start_consul.sh", env: {"SERVER_COUNT" => SERVER_COUNT,"LOG_LEVEL" => LOG_LEVEL,"DOMAIN" => DOMAIN,"DCS" => "#{dcname}","DC" => "#{dc}"}
+      vl.vm.provision :shell, path: "scripts/install_vl.sh", env: {"VAULT" => VAULT}
+      vl.vm.provision :shell, path: "scripts/init_vl.sh"
+      vl.vm.provision :shell, path: "scripts/check_vl.sh"
+      vl.vm.network "private_network", ip: "10.10.50.150"
     end
   
 

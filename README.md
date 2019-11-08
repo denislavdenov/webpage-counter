@@ -29,11 +29,11 @@ Requirements:
 - [x] Start connect with systemd
 - [x] Put a password to the redis DB
 - [x] Update application to use password
+- [x] Add Vault in dev mode
+- [x] Add Redis password in Vault KV
 
 ## TODO:
 
-- [ ] Add Vault in dev mode
-- [ ] Add Redis password in Vault KV
 - [ ] Create AppRole for our application
 - [ ] Update app to read redis password from Vault KV
 - [ ] Create ENV VAR for APP_PORT(5000)

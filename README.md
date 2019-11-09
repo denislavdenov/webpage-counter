@@ -31,11 +31,11 @@ Requirements:
 - [x] Update application to use password
 - [x] Add Vault in dev mode
 - [x] Add Redis password in Vault KV
+- [x] Create AppRole for our application
+- [x] Update app to read redis password from Vault KV
 
 ## TODO:
 
-- [ ] Create AppRole for our application
-- [ ] Update app to read redis password from Vault KV
 - [ ] Create ENV VAR for APP_PORT(5000)
 - [ ] Make application to use this port, if no ENV VAR, default to 5000
 - [ ] Run 3 copies of app on port 5001-5003

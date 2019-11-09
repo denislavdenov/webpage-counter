@@ -57,6 +57,16 @@ grep VAULT_TOKEN ~/.bash_profile || {
   echo export VAULT_TOKEN=$(cat /etc/vault.d/.vault-token) | sudo tee -a /home/vagrant/.bash_profile
 }
 
-cat /etc/vault.d/.vault-token > /vagrant/keys/vault.txt
-  
+#cat /etc/vault.d/.vault-token > /vagrant/keys/vault.txt
+
+export VAULT_ADDR=http://127.0.0.1:8200
+export VAULT_TOKEN=$(cat /etc/vault.d/.vault-token)
+
+vault secrets enable -version=1 kv
+vault kv put kv/redis pass=redispass
+vault auth enable approle
+vault policy write redis /vagrant/policy/redis-pol.hcl
+vault policy write user_token /vagrant/policy/vault-user-token.hcl 
+vault token create -policy=user_token > /vagrant/keys/vault.txt -field "token"
+vault write auth/approle/role/redis policies="redis"
 

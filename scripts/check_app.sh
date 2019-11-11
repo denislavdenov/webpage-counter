@@ -30,7 +30,7 @@ cat << EOF > /etc/consul.d/web_app.json
     "service": {
         "name": "web_app",
         "tags": ["${var2}"],
-        "port": 5000,
+        "port": 5001,
         "connect": {
           "sidecar_service": {
             "proxy": {
@@ -45,8 +45,8 @@ cat << EOF > /etc/consul.d/web_app.json
     "checks": [
         {
             "id": "app_tcp_check",
-            "name": "TCP on port 5000",
-            "tcp": "127.0.0.1:5000",
+            "name": "TCP on port 5001",
+            "tcp": "127.0.0.1:5001",
             "interval": "10s",
             "timeout": "1s"
         },

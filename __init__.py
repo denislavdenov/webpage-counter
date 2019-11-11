@@ -50,6 +50,10 @@ DB_PASS = redisdbpass.json()["data"]["pass"]
 
 app = Flask(__name__)
 conn = redis.StrictRedis(host=DB_IP, port=DB_PORT, password=DB_PASS)
+APP_PORT_RUN = os.environ['APP_PORT']
+if APP_PORT_RUN != "5000":
+    APP_PORT_RUN = "5000"
+
 
 @app.route('/')
 def hello():
@@ -58,4 +62,4 @@ def hello():
     return render_template('index.html', count = count)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=APP_PORT_RUN, debug=True)

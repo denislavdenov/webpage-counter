@@ -33,11 +33,11 @@ Requirements:
 - [x] Add Redis password in Vault KV
 - [x] Create AppRole for our application
 - [x] Update app to read redis password from Vault KV
+- [x] Create ENV VAR for APP_PORT(5000)
+- [x] Make application to use this port, if no ENV VAR, default to 5000
 
 ## TODO:
 
-- [ ] Create ENV VAR for APP_PORT(5000)
-- [ ] Make application to use this port, if no ENV VAR, default to 5000
 - [ ] Run 3 copies of app on port 5001-5003
 - [ ] Make the application run from Nomad
 - [ ] Use Fabio for Load Balancer

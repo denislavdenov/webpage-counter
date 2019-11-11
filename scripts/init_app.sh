@@ -24,6 +24,7 @@ pipenv install redis
 source .env
 export FLASK_ENV=development
 export FLASK_APP='/vagrant/.'
+export APP_PORT=5000
 sudo chown -R vagrant:vagrant /etc/systemd/system
 
 cat << EOF > /etc/systemd/system/webapp.service
@@ -37,7 +38,7 @@ cat << EOF > /etc/systemd/system/webapp.service
     User=vagrant
     Group=vagrant
     WorkingDirectory=/vagrant/
-    ExecStart=/usr/local/bin/pipenv run flask run --host=0.0.0.0 --port=5000
+    ExecStart=/usr/local/bin/pipenv run flask run --host=0.0.0.0
     KillMode=process
     Restart=on-failure
     LimitNOFILE=65536

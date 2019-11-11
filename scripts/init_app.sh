@@ -24,7 +24,9 @@ pipenv install redis
 source .env
 export FLASK_ENV=development
 export FLASK_APP='/vagrant/.'
-export APP_PORT=5000
+export APP_PORT=5001
+export APP_PORT2=5002
+export APP_PORT3=5003
 sudo chown -R vagrant:vagrant /etc/systemd/system
 
 cat << EOF > /etc/systemd/system/webapp.service
@@ -38,7 +40,51 @@ cat << EOF > /etc/systemd/system/webapp.service
     User=vagrant
     Group=vagrant
     WorkingDirectory=/vagrant/
-    ExecStart=/usr/local/bin/pipenv run flask run --host=0.0.0.0
+    ExecStart=/usr/local/bin/pipenv run flask run --host=0.0.0.0 --port=${APP_PORT}
+    KillMode=process
+    Restart=on-failure
+    LimitNOFILE=65536
+
+
+    [Install]
+    WantedBy=multi-user.target
+
+EOF
+
+cat << EOF > /etc/systemd/system/webapp2.service
+    [Unit]
+    Description="Python web app"
+    Documentation=None
+    Requires=network-online.target
+    After=network-online.target
+
+    [Service]
+    User=vagrant
+    Group=vagrant
+    WorkingDirectory=/vagrant/
+    ExecStart=/usr/local/bin/pipenv run flask run --host=0.0.0.0 --port=${APP_PORT2}
+    KillMode=process
+    Restart=on-failure
+    LimitNOFILE=65536
+
+
+    [Install]
+    WantedBy=multi-user.target
+
+EOF
+
+cat << EOF > /etc/systemd/system/webapp3.service
+    [Unit]
+    Description="Python web app"
+    Documentation=None
+    Requires=network-online.target
+    After=network-online.target
+
+    [Service]
+    User=vagrant
+    Group=vagrant
+    WorkingDirectory=/vagrant/
+    ExecStart=/usr/local/bin/pipenv run flask run --host=0.0.0.0 --port=${APP_PORT3}
     KillMode=process
     Restart=on-failure
     LimitNOFILE=65536
@@ -53,4 +99,10 @@ systemctl daemon-reload
 systemctl enable webapp
 systemctl start webapp
 systemctl status webapp
+systemctl enable webapp2
+systemctl start webapp2
+systemctl status webapp2
+systemctl enable webapp3
+systemctl start webapp3
+systemctl status webapp3
 set +x

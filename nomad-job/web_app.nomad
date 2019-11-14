@@ -51,11 +51,7 @@ job "web_app" {
 
     task "app" {
       driver = "raw_exec"
-      env {
-        CONSUL_HTTP_TOKEN = "adfb8cc1-7ede-dad6-b2df-3fbf85cbbe30"
-      }   
-
-
+      
       config {
         command = "/bin/sh"
         args = ["/vagrant/scripts/runapp.sh"]

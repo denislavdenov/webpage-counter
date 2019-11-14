@@ -16,46 +16,46 @@ mkdir -p /vagrant/logs
 mkdir -p /vagrant/keys
 mkdir -p /etc/consul.d
 
-acl_boostrap () {
-    cat << EOF > /etc/consul.d/acl.json
-    {
-        "acl": {
-            "enabled": true,
-            "default_policy": "deny",
-            "down_policy": "extend-cache"
-        }
-    }
-EOF
+# acl_boostrap () {
+#     cat << EOF > /etc/consul.d/acl.json
+#     {
+#         "acl": {
+#             "enabled": true,
+#             "default_policy": "allow",
+#             "down_policy": "extend-cache"
+#         }
+#     }
+# EOF
 
-    systemctl restart consul.service
-    sleep 15
-    consul acl bootstrap > /vagrant/keys/master.txt
-    export CONSUL_HTTP_TOKEN=`cat /vagrant/keys/master.txt | grep "SecretID:" | cut -c19-`
-    consul members
-    consul acl policy create  -name "agent-token" -description "Agent Token Policy" -rules @/vagrant/policy/agent-policy.hcl
-    consul acl policy create  -name "kv-token" -description "KV token policy" -rules @/vagrant/policy/kv.hcl
-    consul acl policy create  -name "snapshot-token" -description "Snapshot token policy" -rules @/vagrant/policy/snapshot.hcl
-    consul acl token create -description "Agent Token" -policy-name "agent-token" > /vagrant/keys/agent.txt
-    consul acl token create -description "KV Token" -policy-name "kv-token" > /vagrant/keys/kv.txt
-    consul acl token create -description "Snapshot Token" -policy-name "snapshot-token" > /vagrant/keys/snapshot.txt
+#     systemctl restart consul.service
+#     sleep 15
+#     consul acl bootstrap > /vagrant/keys/master.txt
+#     export CONSUL_HTTP_TOKEN=`cat /vagrant/keys/master.txt | grep "SecretID:" | cut -c19-`
+#     consul members
+#     consul acl policy create  -name "agent-token" -description "Agent Token Policy" -rules @/vagrant/policy/agent-policy.hcl
+#     consul acl policy create  -name "kv-token" -description "KV token policy" -rules @/vagrant/policy/kv.hcl
+#     consul acl policy create  -name "snapshot-token" -description "Snapshot token policy" -rules @/vagrant/policy/snapshot.hcl
+#     consul acl token create -description "Agent Token" -policy-name "agent-token" > /vagrant/keys/agent.txt
+#     consul acl token create -description "KV Token" -policy-name "kv-token" > /vagrant/keys/kv.txt
+#     consul acl token create -description "Snapshot Token" -policy-name "snapshot-token" > /vagrant/keys/snapshot.txt
 
-}
+# }
 
-change_acl_conf () {
-    cat << EOF > /etc/consul.d/acl.json
-    {
-        "primary_datacenter": "dc1",
-        "acl": {
-            "enabled": true,
-            "default_policy": "deny",
-            "down_policy": "deny",
-            "tokens": {
-                "default": "${AGENT_TOKEN}"
-            }
-        }
-    }
-EOF
-}
+# change_acl_conf () {
+#     cat << EOF > /etc/consul.d/acl.json
+#     {
+#         "primary_datacenter": "dc1",
+#         "acl": {
+#             "enabled": true,
+#             "default_policy": "deny",
+#             "down_policy": "extend-cache",
+#             "tokens": {
+#                 "default": "${AGENT_TOKEN}"
+#             }
+#         }
+#     }
+# EOF
+# }
 
 # Function used for initialize Consul. Requires 2 arguments: Log level and the hostname assigned by the respective variables.
 # If no log level is specified in the Vagrantfile, then default "info" is used.
@@ -85,24 +85,24 @@ init_consul () {
     sudo chown --recursive consul:consul /tmp/consul_logs/
 
     cat << EOF > /etc/systemd/system/consul.service
-    [Unit]
-    Description="HashiCorp Consul - A service mesh solution"
-    Documentation=https://www.consul.io/
-    Requires=network-online.target
-    After=network-online.target
+[Unit]
+Description="HashiCorp Consul - A service mesh solution"
+Documentation=https://www.consul.io/
+Requires=network-online.target
+After=network-online.target
 
-    [Service]
-    User=consul
-    Group=consul
-    ExecStart=/usr/local/bin/consul agent -config-dir=/etc/consul.d/
-    ExecReload=/usr/local/bin/consul reload
-    KillMode=process
-    Restart=on-failure
-    LimitNOFILE=65536
+[Service]
+User=consul
+Group=consul
+ExecStart=/usr/local/bin/consul agent -config-dir=/etc/consul.d/
+ExecReload=/usr/local/bin/consul reload
+KillMode=process
+Restart=on-failure
+LimitNOFILE=65536
 
 
-    [Install]
-    WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
 
 EOF
 }
@@ -129,6 +129,9 @@ create_server_conf () {
         "disable_remote_exec": true,
         "connect": {
           "enabled": true
+        },
+        "ports": {
+            "grpc": 8502
         }
     }
 EOF
@@ -151,7 +154,13 @@ create_client_conf () {
             "datacenter": "${6}",
             "ui": true,
             "disable_remote_exec": true,
-            "leave_on_terminate": false
+            "leave_on_terminate": false,
+            "ports": {
+                "grpc": 8502
+            },
+            "connect": {
+                "enabled": true
+            }
         }
 
 EOF
@@ -174,15 +183,15 @@ if [[ "${var2}" =~ "consul-server" ]]; then
     journalctl -f -u consul.service > /vagrant/logs/${var2}.log &
     sleep 5
     sudo systemctl status consul
-    if [[ "${var2}" =~ "1-dc1" ]]; then
+    # if [[ "${var2}" =~ "1-dc1" ]]; then
 
-    acl_boostrap
+    # acl_boostrap
     
-    fi
-    export AGENT_TOKEN=`cat /vagrant/keys/agent.txt | grep "SecretID:" | cut -c19-`
-    change_acl_conf
-    systemctl restart consul
-    sleep 15
+    # fi
+    # export AGENT_TOKEN=`cat /vagrant/keys/agent.txt | grep "SecretID:" | cut -c19-`
+    # change_acl_conf
+    # systemctl restart consul
+    sleep 5
 
 
 else
@@ -192,8 +201,8 @@ else
     fi
 
     sleep 1
-    export AGENT_TOKEN=`cat /vagrant/keys/agent.txt | grep "SecretID:" | cut -c19-`
-    change_acl_conf
+    # export AGENT_TOKEN=`cat /vagrant/keys/agent.txt | grep "SecretID:" | cut -c19-`
+    # change_acl_conf
     sudo systemctl enable consul
     sudo systemctl start consul
     journalctl -f -u consul.service > /vagrant/logs/${var2}.log &

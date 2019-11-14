@@ -6,7 +6,7 @@ import urllib
 import urllib.request
 import requests
 
-url = "http://10.10.56.11:8500/v1/catalog/service/web_app-sidecar-proxy"
+url = "http://10.10.56.11:8500/v1/catalog/service/webapp-sidecar-proxy"
 response = urllib.request.urlopen(url).read()
 output = json.loads(response.decode('utf-8'))
 DB_IP = output[0]["ServiceProxy"]["LocalServiceAddress"]

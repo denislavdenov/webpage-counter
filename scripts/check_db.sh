@@ -2,7 +2,7 @@
 
 export HN=$(hostname)
 var2=$(hostname)
-export CONSUL_HTTP_TOKEN=`cat /vagrant/keys/master.txt | grep "SecretID:" | cut -c19-`
+# export CONSUL_HTTP_TOKEN=`cat /vagrant/keys/master.txt | grep "SecretID:" | cut -c19-`
 # Create script check
 
 cat << EOF > /usr/local/bin/check_db.sh

@@ -4,3 +4,6 @@ node_prefix "" {
 service_prefix "" {
    policy = "write"
 }
+agent_prefix "" {
+  policy = "write"
+}

@@ -6,7 +6,7 @@ import urllib
 import urllib.request
 import requests
 
-url = "http://10.10.56.11:8500/v1/catalog/service/webapp-sidecar-proxy"
+url = "http://10.10.56.11:8500/v1/catalog/service/webapp-proxy-sidecar-proxy"
 response = urllib.request.urlopen(url).read()
 output = json.loads(response.decode('utf-8'))
 DB_IP = output[0]["ServiceProxy"]["LocalServiceAddress"]
@@ -60,6 +60,11 @@ def hello():
     conn.incr('hits')
     count = int(conn.get('hits'))
     return render_template('index.html', count = count)
+
+@app.route('/health')
+def health():
+    
+    return render_template('health.html')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)

@@ -1,41 +1,21 @@
 job "web_app" {
   datacenters = ["dc1"]
-  
-
-//   group "redis_db" {
-//     network {
-//       mode = "bridge"
-//     }
-//     service {
-//       name = "redis"
-//       port = "6379"
-
-//       connect {
-//         sidecar_service {}
-//       }
-//     }
-//     task "redis" {           # The task stanza specifices a task (unit of work) within a group
-//       driver = "docker"      # This task uses Docker, other examples: exec, LXC, QEMU
-//       config {
-//         image = "redis:3.2"  # Docker image to download (uses public hub by default)
-//       }
-//     } 
-//   }
     
 
   group "counter" {
+    count = 4
     network {
       mode = "bridge"
 
       port "http" {
-        static = 5000
+  
         to     = 5000
       }
     }
 
     service {
-      name = "webapp"
-      port = "5000"
+      name = "webapp-proxy"
+      port = "http"
       connect {
         sidecar_service {
             proxy {
@@ -47,8 +27,21 @@ job "web_app" {
         }
       }
     }
-    
 
+    service {
+      name = "webapp"
+      port = "http"
+      tags = ["urlprefix-/"]
+      check {
+        name     = "HTTP Health Check"
+        type     = "http"
+        port     = "http"
+        path     = "/health"
+        interval = "5s"
+        timeout  = "2s"
+      }
+    }
+    
     task "app" {
       driver = "raw_exec"
       
@@ -60,6 +53,7 @@ job "web_app" {
       dispatch_payload {
        file = "/vagrant/scripts/runapp.sh"
      }
+      
 
     }
   }

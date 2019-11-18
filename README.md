@@ -37,7 +37,8 @@ Requirements:
 - [x] Make application to use this port, if no ENV VAR, default to 5000
 - [x] Run 3 copies of app on port 5001-5003
 - [x] Make the application run from Nomad, but removed ACLs since it is not supported currently with Nomad proxy.
+- [x] Use Fabio for Load Balancer
 
 ## TODO:
 
-- [ ] Use Fabio for Load Balancer
+

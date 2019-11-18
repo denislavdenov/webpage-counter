@@ -20,4 +20,4 @@ pipenv install psycopg2-binary Flask-SQLAlchemy Flask-Migrate
 pipenv install mistune
 pipenv install redis
 pipenv install requests
-pipenv run flask run --host=0.0.0.0 --port=5000
+pipenv run flask run --host=0.0.0.0 --port=${NOMAD_PORT_http}

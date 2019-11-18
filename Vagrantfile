@@ -69,6 +69,10 @@ Vagrant.configure("2") do |config|
 
     # nomad client 
     config.vm.define "client-nomad-client-#{dcname}" do |nm|
+      config.vm.provider "virtualbox" do |v|
+        v.memory = 2048
+        v.cpus = 2
+      end
       nm.vm.box = "denislavd/xenial64"
       nm.vm.hostname = "client-nomad-client-#{dcname}"
       nm.vm.provision :shell, path: "scripts/install_consul.sh", env: {"CONSUL_VER" => CONSUL_VER}
